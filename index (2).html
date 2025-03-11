@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" 
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <!-- Zuora Public javascript library -->
+    <script type="text/javascript" 
+            src="https://static.zuora.com/Resources/libs/hosted/1.3.1/zuora-min.js"></script>
+
+    <script>
+    // Optional params in case prepopulation of certain fields is desired
+    var prepopulateFields = {
+        creditCardAddress1: "123 Any Street",
+        creditCardAddress2: "Suite #999",
+        creditCardCountry: "USA",
+        creditCardHolderName: "John Doe"
+    };
+
+    // Sample params for rendering iframe on the client side
+    var params = {
+        tenantId: 49093, 
+        id: "8ad086fa95842e8d01958612e3fb5553",  
+        token: "LhL2FzF1qAp8E5fXTjhaBEaIly6bFvSL", 
+        signature: "Mi7NozNdi6i6jirUtzXvKrFubJRHG1ooJdHvUieiGOrj4B/8IV11nRK8GDhA5o2rQF5vjjPFHiNtz7I4+eQh7cnZdAMs/g1Bok/ElVP8+1EYfNgr2gUfl1pX0ZdzIjiwnxdOlDT75UGKDU3v9XsVZAXQFO645zbfAf18sb77+yZMBuBoeoBHn4E5K/YfkMo3T+te+z6IJcGwn0xKkl+sXI+bwR6X63RRePAdPa36sNLP+gLv2OfdRQry1GnSvKDowWp7Os2/tXXYJ+PgoRowSIJR1vb4Oh33dgRbGA6tEs5nPEFiTC1/I9m+YSlSAU+JkotnnLfnswzfvN8zQv5xlw==",  // Full RSA signature
+        style: "overlay",  // Choose the payment form style (can be 'overlay', 'embedded', etc.)
+        key: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhGZ1XhtEGoFMsTxMh4fyzi1b9lf8217al6E9N1JU2QmMpm78lj5Jv+qs+iikd7gxWlEIG1mf5VWBExBhfU+S9nQIkBkee0y3JbSy2KBxLqoYxkDzw2Jwh3njZdBUQwaGz4gP0iSh92ebIphFv0qy72KiL9otEf7zikTwhJQ/WaWrqh5AYz4KaZ9oc0NgD4OwqQkPIUpN1t1WixhIeAU96pLc8gsnQUWWJMsNmxLQFNolg9TYiM30db7/qMz/ogMPa9DjuL4dZcBonxLQP6XJlCfvUO5zhGcmn/1c4cC37U+IF4QBIczVltI/S1dG+QjQW3roddtohNdt3ySGQf5BJwIDAQAB",  // RSA public key
+        submitEnabled: "true",  
+        locale: "en_US",  // Locale, e.g., 'en_US' for English
+        param_supportedTypes: "Visa,MasterCard",  // Supported card types
+        url: "https://apisandbox.zuora.com/apps/PublicHostedPageLite.do",  
+        paymentGateway: "DefaultGateway"  
+    };
+
+    // Callback function for response handling
+    function callback(response) {
+        if (response.success) {
+            // Redirect to a thank you page after a successful payment
+            var redirectUrl = "../thanks?refid=" + response.refId + "&field_passthrough1=" + response.field_passthrough1;
+            window.location.replace(redirectUrl);
+        } else {
+            // Display error message in case of failure
+            alert("Error Code: " + response.errorCode + ", Error Message: " + response.errorMessage);
+        }
+    }
+
+    // Function to load the Zuora hosted payment page
+    function loadHostedPage() {
+        // Event handler for when the HPP iframe is loaded
+        Z.setEventHandler("onloadCallback", function() {
+            console.warn("HPP page is loaded.");
+        });
+
+        // Render the Zuora payment page
+        Z.render(params, prepopulateFields, callback);
+    }
+    </script>
+</head>
+
+<body onload="loadHostedPage();">
+    <div id="zuora_payment"></div>  <!-- Zuora payment page container -->
+</body>
+</html>
